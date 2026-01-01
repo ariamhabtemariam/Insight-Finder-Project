@@ -1,0 +1,30 @@
+name: C++ Build & Google Tests
+
+on:
+  push:
+    branches: [ main, master, reorganizing-files ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libcurl4-openssl-dev
+
+      - name: Configure CMake
+        run: cmake -S . -B build
+
+      - name: Build project
+        run: cmake --build build --config Debug
+
+      - name: Run tests
+        working-directory: build
+        run: ctest --output-on-failure
